@@ -1,4 +1,4 @@
-package org.itshowmessenger.qna.qna_backend.config;
+package org.itshow.messenger.qna_backend.config;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;

@@ -1,4 +1,4 @@
-package org.itshowmessenger.qna.qna_backend;
+package org.itshow.messenger.qna_backend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
