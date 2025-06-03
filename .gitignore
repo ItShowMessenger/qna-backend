@@ -206,3 +206,9 @@ gradle-app.setting
 *.hprof
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,java,intellij,gradle,firebase
+
+# Spring 설정 파일 무시
+src/main/resources/application.properties
+
+# 환경변수 파일 무시
+.env
