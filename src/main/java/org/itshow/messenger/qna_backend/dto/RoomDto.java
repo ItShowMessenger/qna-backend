@@ -12,7 +12,7 @@ public class RoomDto {  // 채팅방 정보
     }
 
     private String roomid;  // 형식 : studentid_teacherid
-    private String roomname;    // 대화 상대 이름
+    // room 이름 : 대화 상대 이름
     private String lastmessageid;
     private Status status;  // null = 전부 참가
 }

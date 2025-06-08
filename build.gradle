@@ -37,6 +37,9 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	// https://mvnrepository.com/artifact/com.google.firebase/firebase-admin
 	implementation 'com.google.firebase:firebase-admin:9.4.3'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	// https://mvnrepository.com/artifact/de.huxhorn.sulky/de.huxhorn.sulky.ulid
+	implementation 'de.huxhorn.sulky:de.huxhorn.sulky.ulid:8.2.0'
 }
 
 tasks.named('test') {

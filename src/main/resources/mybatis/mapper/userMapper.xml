@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.itshow.messenger.qna_backend.mapper.UserMapper">
+    <select id="selectEmail" resultType="org.itshow.messenger.qna_backend.dto.UserDto">
+        select * from user where email = #{email}
+    </select>
+    <insert id="insertUser" parameterType="org.itshow.messenger.qna_backend.dto.UserDto">
+        insert into user (userid, email, name, imgurl, usertype)
+        values( #{userid}, #{email}, #{name}, #{imgurl}, #{usertype})
+    </insert>
+</mapper>
