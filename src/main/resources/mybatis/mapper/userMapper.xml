@@ -6,6 +6,16 @@
     </select>
     <insert id="insertUser" parameterType="org.itshow.messenger.qna_backend.dto.UserDto">
         insert into user (userid, email, name, imgurl, usertype)
-        values( #{userid}, #{email}, #{name}, #{imgurl}, #{usertype})
+        values( #{userid}, #{email}, #{name}, #{imgurl}, #{usertype} )
+    </insert>
+    <insert id="insertTeacher" parameterType="String">
+        insert into teacher (teacherid) values( #{teacherid} )
+    </insert>
+    <update id="updateTeacher" parameterType="org.itshow.messenger.qna_backend.dto.TeacherDto">
+        update teacher set subject = #{subject}, office = #{office} where teacherid = #{teacherid}
+    </update>
+    <insert id="insertFaq" parameterType="org.itshow.messenger.qna_backend.dto.FaqDto">
+        insert into faq (faqid, teacherid, question, answer)
+        values( #{faqid}, #{teacherid}, #{question}, #{answer} )
     </insert>
 </mapper>

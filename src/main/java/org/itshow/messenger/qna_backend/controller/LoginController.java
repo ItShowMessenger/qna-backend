@@ -1,25 +1,16 @@
 package org.itshow.messenger.qna_backend.controller;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.FirebaseToken;
-import de.huxhorn.sulky.ulid.ULID;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.itshow.messenger.qna_backend.dto.UserDto;
 import org.itshow.messenger.qna_backend.service.UserService;
 import org.itshow.messenger.qna_backend.util.Response;
+import org.itshow.messenger.qna_backend.util.Ulid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-import java.util.Collections;
 import java.util.regex.Pattern;
 
 @RestController
@@ -27,7 +18,7 @@ import java.util.regex.Pattern;
 public class LoginController {
     private final UserService userService;
     private final Pattern schoolEmail = Pattern.compile("^[a-zA-Z0-9._%+-]+@e-mirim\\.hs\\.kr$");
-    private final ULID ulid = new ULID();
+    private final Ulid ulid;
 
     @PostMapping("/api/login")
     public ResponseEntity<?> login(HttpServletRequest request){
@@ -49,7 +40,7 @@ public class LoginController {
             // 자동 회원가입
             if(user == null){
                 // ulid 생성
-                String userid = ulid.nextULID();
+                String userid = ulid.nextUlid();
                 firebase.setUserid(userid);
 
                 // usertype 구분
@@ -66,6 +57,7 @@ public class LoginController {
 
                 // 선생님 추가 정보 필요
                 if(user.getUsertype() == UserDto.UserType.TEACHER){
+                    userService.insertTeacher(user.getUserid());
                     message = "가입 성공";
                 }
             }
