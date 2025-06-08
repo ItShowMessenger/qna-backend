@@ -43,8 +43,10 @@ public class LoginController {
         }
 
         try{
-            // 자동 회원가입
             UserDto user = userService.selectEmail(firebase.getEmail());
+            String message = "로그인 성공";
+
+            // 자동 회원가입
             if(user == null){
                 // ulid 생성
                 String userid = ulid.nextULID();
@@ -53,6 +55,7 @@ public class LoginController {
                 // usertype 구분
                 if (firebase.getName() != null && firebase.getName().matches("^\\d{4}.*")) {
                     firebase.setUsertype(UserDto.UserType.STUDENT);
+                    firebase.setName(firebase.getName().replaceFirst("^\\d{4}_", ""));
                 } else {
                     firebase.setUsertype(UserDto.UserType.TEACHER);
                 }
@@ -60,9 +63,14 @@ public class LoginController {
                 // user 추가
                 userService.insertUser(firebase);
                 user = firebase;
+
+                // 선생님 추가 정보 필요
+                if(user.getUsertype() == UserDto.UserType.TEACHER){
+                    message = "가입 성공";
+                }
             }
 
-            return Response.ok("로그인 성공", null);
+            return Response.ok(message, user);
 
         }catch (Exception e){
             e.printStackTrace();
