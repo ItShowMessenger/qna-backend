@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.itshow.messenger.qna_backend.dto.FaqDto;
 import org.itshow.messenger.qna_backend.dto.TeacherDto;
+import org.itshow.messenger.qna_backend.dto.UserDto;
 import org.itshow.messenger.qna_backend.service.UserService;
 import org.itshow.messenger.qna_backend.util.Response;
 import org.itshow.messenger.qna_backend.util.Ulid;
@@ -72,6 +73,33 @@ public class TeacherController {
                 userService.insertFaq(faqDto);
             }
             return Response.ok("faq 저장 성공", null);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Response.internalServerError("서버 오류");
+        }
+    }
+
+    @GetMapping("/profile/{teacherid}")
+    public ResponseEntity<?> selectTeacher(@PathVariable("teacherid") String teacherid){
+        try{
+            Map<String, Object> profile = userService.selectUser(teacherid);
+
+            if(profile == null){
+                return Response.badRequest("선생님을 찾을 수 없음");
+            }
+
+            return Response.ok("선생님 프로필 조회 성공", profile);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Response.internalServerError("서버 오류");
+        }
+    }
+
+    @GetMapping("/search")  // 선생님 목록 조회
+    public ResponseEntity<?> searchTeacher(@RequestParam(name = "search", required = false) String search){
+        try{
+            List<Map<String, Object>> result = userService.searchTeacher(search);
+            return Response.ok("선생님 목록 조회 성공", result);
         }catch (Exception e){
             e.printStackTrace();
             return Response.internalServerError("서버 오류");

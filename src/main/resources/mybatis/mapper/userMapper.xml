@@ -18,4 +18,22 @@
         insert into faq (faqid, teacherid, question, answer)
         values( #{faqid}, #{teacherid}, #{question}, #{answer} )
     </insert>
+    <select id="selectId" resultType="org.itshow.messenger.qna_backend.dto.UserDto">
+        select * from user where userid = #{userid}
+    </select>
+    <select id="selectTeacher" resultType="org.itshow.messenger.qna_backend.dto.TeacherDto">
+        select * from teacher where teacherid = #{teacherid}
+    </select>
+    <select id="selectAllTeacher" resultType="org.itshow.messenger.qna_backend.dto.TeacherDto">
+        select * from teacher;
+    </select>
+    <select id="selectFaqs" resultType="org.itshow.messenger.qna_backend.dto.FaqDto">
+        select * from faq where teacherid = #{teacherid}
+    </select>
+    <select id="selectSearch" resultType="org.itshow.messenger.qna_backend.dto.UserDto">
+        select u.userid, u.email, u.name, u.imgurl, u.usertype
+        from user u join teacher t on u.userid = t.teacherid
+        where concat(u.email, '/', u.name, '/', ifnull(t.subject, ''), '/', ifnull(t.office, ''))
+        like concat('%', #{search}, '%')
+    </select>
 </mapper>
