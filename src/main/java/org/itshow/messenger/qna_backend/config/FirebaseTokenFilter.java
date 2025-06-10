@@ -28,26 +28,30 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         String token = extractToken(request);
-        if(token != null){
-            try {
-                // Firebase 토큰 검증
-                FirebaseToken decodedToken = firebaseAuth.verifyIdToken(token);
 
-                UserDto userDto = new UserDto();
-                userDto.setEmail(decodedToken.getEmail());
-                userDto.setName(decodedToken.getName());
-                userDto.setImgurl(decodedToken.getPicture());
+        if(token == null){
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-                // SecurityContext에 인증 정보 저장
-                UsernamePasswordAuthenticationToken authenticationToken =
-                        new UsernamePasswordAuthenticationToken(userDto, null, Collections.emptyList());
-                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-            }catch (FirebaseAuthException e){
-                logger.warn("Firebase 인증 실패: " + e.getMessage());
-            }catch (Exception e){
-                logger.error("에러", e);
-            }
+        try {
+            // Firebase 토큰 검증
+            FirebaseToken decodedToken = firebaseAuth.verifyIdToken(token);
+
+            UserDto userDto = new UserDto();
+            userDto.setEmail(decodedToken.getEmail());
+            userDto.setName(decodedToken.getName());
+            userDto.setImgurl(decodedToken.getPicture());
+
+            // SecurityContext에 인증 정보 저장
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(userDto, null, Collections.emptyList());
+            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        }catch (FirebaseAuthException e){
+            logger.warn("Firebase 인증 실패: " + e.getMessage());
+        }catch (Exception e){
+            logger.error("에러", e);
         }
 
         filterChain.doFilter(request, response);

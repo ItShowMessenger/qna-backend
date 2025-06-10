@@ -7,6 +7,7 @@ import org.itshow.messenger.qna_backend.service.UserService;
 import org.itshow.messenger.qna_backend.util.Response;
 import org.itshow.messenger.qna_backend.util.Ulid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,9 +23,8 @@ public class LoginController {
 
     @PostMapping("/api/login")
     public ResponseEntity<?> login(HttpServletRequest request){
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if(!(principal instanceof UserDto firebase) || firebase.getEmail() == null){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication == null || !(authentication.getPrincipal() instanceof UserDto firebase) || firebase.getEmail() == null){
             return Response.unauthorized("Firebase 토큰 인증 실패");
         }
 
