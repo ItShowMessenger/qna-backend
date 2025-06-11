@@ -11,6 +11,8 @@ import org.itshow.messenger.qna_backend.service.UserService;
 import org.itshow.messenger.qna_backend.util.Response;
 import org.itshow.messenger.qna_backend.util.Ulid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -79,13 +81,13 @@ public class TeacherController {
         }
     }
 
-    @GetMapping("/profile/{teacherid}")
-    public ResponseEntity<?> selectTeacher(@PathVariable("teacherid") String teacherid){
+    @GetMapping("/profile/{userid}") // 프로필 조회
+    public ResponseEntity<?> selectProfile(@PathVariable("userid") String userid){
         try{
-            Map<String, Object> profile = userService.selectUser(teacherid);
+            Map<String, Object> profile = userService.selectUser(userid);
 
             if(profile == null){
-                return Response.badRequest("선생님을 찾을 수 없음");
+                return Response.badRequest("사용자를 찾을 수 없음");
             }
 
             return Response.ok("선생님 프로필 조회 성공", profile);
@@ -96,10 +98,25 @@ public class TeacherController {
     }
 
     @GetMapping("/search")  // 선생님 목록 조회
-    public ResponseEntity<?> searchTeacher(@RequestParam(name = "search", required = false) String search){
+    public ResponseEntity<?> searchUser(@RequestParam(name = "search", required = false) String search){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication == null || !(authentication.getPrincipal() instanceof UserDto reqUser)){
+            return Response.unauthorized("인증 정보 없음");
+        }
+
         try{
-            List<Map<String, Object>> result = userService.searchTeacher(search);
-            return Response.ok("선생님 목록 조회 성공", result);
+            if(search == null || search.trim().isEmpty()){
+                search = "";
+            }
+
+            List<Map<String, Object>> result;
+            if(reqUser.getUsertype() == UserDto.UserType.STUDENT){
+                result = userService.searchTeacher(search);
+            }else{
+                result = userService.searchStudent(search);
+            }
+
+            return Response.ok("목록 조회 성공", result);
         }catch (Exception e){
             e.printStackTrace();
             return Response.internalServerError("서버 오류");

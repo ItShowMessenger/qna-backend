@@ -15,4 +15,5 @@ public interface UserService {
     public void insertFaq(FaqDto dto);
     public Map<String, Object> selectUser(String userid);
     public List<Map<String, Object>> searchTeacher(String search);
+    public List<Map<String, Object>> searchStudent(String search);
 }

@@ -17,7 +17,7 @@ public interface UserMapper {
     public void insertFaq(FaqDto dto);
     public UserDto selectId(String userid);
     public TeacherDto selectTeacher(String teacherid);
-    public List<TeacherDto> selectAllTeacher();
     public List<FaqDto> selectFaqs(String teacherid);
-    public List<UserDto> selectSearch(String search);
+    public List<UserDto> selectSearchTeacher(String search);
+    public List<UserDto> selectSearchStudent(String search);
 }
