@@ -9,7 +9,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry){
         registry.addMapping("/api/**")  // 허용 경로
-                .allowedOrigins("*") // 허용 도메인
+                .allowedOrigins("http://localhost:3000", "https://qna-messenger.mirim-it-show.site") // 허용 도메인
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE")
                 .allowedHeaders("*")
                 .exposedHeaders("Authorization")
