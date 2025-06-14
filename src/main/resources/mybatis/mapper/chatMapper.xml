@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.itshow.messenger.qna_backend.mapper.ChatMapper">
+    <insert id="insertMessage" parameterType="org.itshow.messenger.qna_backend.dto.MessageDto">
+        insert into message (messageid, roomid, senderid, text, hasfile, `read`, createdat)
+        values( #{messageid}, #{roomid}, #{senderid}, #{text}, #{hasfile}, #{read}, #{createdat} )
+    </insert>
+    <insert id="insertFile" parameterType="org.itshow.messenger.qna_backend.dto.FileDto">
+        insert into file (fileid, filetype, targetid, url, name)
+        values( #{fileid}, #{filetype}, #{targetid}, #{url}, #{name} )
+    </insert>
+    <select id="searchRoom" resultType="org.itshow.messenger.qna_backend.dto.RoomDto">
+        select * from room
+        where roomid like concat('%', #{userid}, '%') and status != #{usertype}
+        and exists ( select 1
+        from message m join user u on (m.senderid = u.userid)
+        left join file f on (m.messageid = f.targetid)
+        where m.roomid = room.roomid and (m.text like concat('%', #{search}, '%')
+        or u.name like concat('%', #{search}, '%') or f.name like concat('%', #{search}, '%'))
+        )
+        order by coalesce(lastmessageid, '') desc;
+    </select>
+    <select id="selectLastMessage" resultType="org.itshow.messenger.qna_backend.dto.MessageDto">
+        select * from message where messageid = #{messageid}
+    </select>
+    <select id="countUnRead" resultType="int">
+        select count(*) from message
+        where roomid = #{roomid} and senderid != #{userid} and `read` = false
+    </select>
+    <select id="selectRoom" resultType="org.itshow.messenger.qna_backend.dto.RoomDto">
+        select * from room where roomid = #{roomid}
+    </select>
+    <insert id="insertRoom" parameterType="String">
+        insert into room(roomid) values( #{roomid} )
+    </insert>
+    <select id="selectMessage" resultType="org.itshow.messenger.qna_backend.dto.MessageDto">
+        select * from message where roomid = #{roomid}
+    </select>
+    <select id="selectFile" resultType="org.itshow.messenger.qna_backend.dto.FileDto">
+        select * from file where targetid = #{messageid}
+    </select>
+    <select id="selectEmojiList" resultType="org.itshow.messenger.qna_backend.dto.EmojiDto">
+        select * from emoji where messageid = #{messageid}
+    </select>
+    <update id="updateMessageRead" parameterType="String">
+        update message set `read` = true
+        where roomid = #{roomid} and senderid != #{userid}
+    </update>
+    <select id="selectMessageId" resultType="org.itshow.messenger.qna_backend.dto.MessageDto">
+        select * from message where messageid = #{messageid}
+    </select>
+    <update id="updateMessage" parameterType="String">
+        update message set text = '삭제된 메시지입니다.', hasfile = false
+        where messageid = #{messageid}
+    </update>
+    <delete id="deleteFile" parameterType="String">
+        delete from file where targetid = #{messageid}
+    </delete>
+    <delete id="deleteRoom" parameterType="String">
+        delete from room where roomid = #{roomid}
+    </delete>
+    <delete id="deleteEmoji" parameterType="String">
+        delete from emoji where messageid = #{messageid}
+    </delete>
+    <update id="updateRoom">
+        update room set status = #{usertype} where roomid = #{roomid}
+    </update>
+    <delete id="deleteEmojiOne" parameterType="String">
+        delete from emoji where messageid = #{messageid} and userid = #{userid}
+    </delete>
+    <insert id="insertEmoji" parameterType="org.itshow.messenger.qna_backend.dto.EmojiDto">
+        insert into emoji(messageid, userid, emoji, createdat)
+        values( #{messageid}, #{userid}, #{emoji}, #{createdat} )
+    </insert>
+    <select id="selectEmoji" parameterType="String">
+        select * from emoji where messageid = #{messageid} and userid = #{userid}
+    </select>
+</mapper>
