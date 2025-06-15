@@ -11,14 +11,14 @@
     </insert>
     <select id="searchRoom" resultType="org.itshow.messenger.qna_backend.dto.RoomDto">
         select * from room
-        where roomid like concat('%', #{userid}, '%') and status != #{usertype}
-        and exists ( select 1
-        from message m join user u on (m.senderid = u.userid)
-        left join file f on (m.messageid = f.targetid)
+        where roomid like concat('%', #{userid}, '%') and ifnull(status, '') != #{usertype}
+        and (#{search} = '' or exists ( select 1 from user
+        where userid = replace(replace(room.roomid, #{userid}, ''), '_', '')
+        and name like concat('%', #{search}, '%'))
+        or exists (select 1 from message m left join file f on (m.messageid = f.targetid)
         where m.roomid = room.roomid and (m.text like concat('%', #{search}, '%')
-        or u.name like concat('%', #{search}, '%') or f.name like concat('%', #{search}, '%'))
-        )
-        order by coalesce(lastmessageid, '') desc;
+        or f.name like concat('%', #{search}, '%')))
+        )order by coalesce(lastmessageid, '') desc
     </select>
     <select id="selectLastMessage" resultType="org.itshow.messenger.qna_backend.dto.MessageDto">
         select * from message where messageid = #{messageid}

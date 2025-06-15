@@ -15,7 +15,7 @@ import java.util.Map;
 @Transactional
 public class ChatServiceImpl implements ChatService{
     private final ChatMapper mapper;
-//    private final SimpMessagingTemplate messagingTemplate;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Override
     public void insertMessage(MessageDto dto) {
@@ -32,7 +32,8 @@ public class ChatServiceImpl implements ChatService{
         if(search == null || search.trim().isEmpty()){
             search = "";
         }
-        return mapper.searchRoom(userid, usertype, search);
+
+        return mapper.searchRoom(userid, usertype.name(), search);
     }
 
     @Override
@@ -110,7 +111,7 @@ public class ChatServiceImpl implements ChatService{
                 "userid", userid,
                 "message", userid + "님이 입장하였습니다."
         );
-//        messagingTemplate.convertAndSend("/queue/chat/room/" + roomid, msg);
+        messagingTemplate.convertAndSend("/queue/chat/room/" + roomid, msg);
     }
 
     @Override
@@ -121,7 +122,7 @@ public class ChatServiceImpl implements ChatService{
                 "userid", userid,
                 "message", userid + "님이 퇴장하였습니다."
         );
-//        messagingTemplate.convertAndSend("/queue/chat/room/" + roomid, msg);
+        messagingTemplate.convertAndSend("/queue/chat/room/" + roomid, msg);
     }
 
     @Override
