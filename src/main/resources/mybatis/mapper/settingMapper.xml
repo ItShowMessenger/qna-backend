@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.itshow.messenger.qna_backend.mapper.SettingMapper">
+    <select id="selectAlarm" resultType="org.itshow.messenger.qna_backend.dto.AlarmSettingDto">
+        select * from alarmsetting where userid = #{userid}
+    </select>
+    <update id="updateAlarm" parameterType="org.itshow.messenger.qna_backend.dto.AlarmSettingDto">
+        update alarmsetting set alarm = #{alarm}, chat = #{chat}, schedule = #{schedule}
+        where userid = #{userid}
+    </update>
+    <update id="updateImgurl" parameterType="org.itshow.messenger.qna_backend.dto.UserDto">
+        update user set imgurl = #{imgurl} where userid = #{userid}
+    </update>
+    <select id="selectFaq" resultType="org.itshow.messenger.qna_backend.dto.FaqDto">
+        select * from faq where faqid = #{faqid}
+    </select>
+    <update id="updateFaq" parameterType="org.itshow.messenger.qna_backend.dto.FaqDto">
+        update faq set question = #{question}, answer = #{answer} where faqid = #{faqid}
+    </update>
+    <delete id="deleteFaq" parameterType="org.itshow.messenger.qna_backend.dto.FaqDto">
+        delete from faq where faqid = #{faqid}
+    </delete>
+    <delete id="deleteFile" >
+        delete from file where targetid = #{scheduleid}
+    </delete>
+    <delete id="deleteUser" parameterType="org.itshow.messenger.qna_backend.dto.UserDto">
+        delete from user where userid = #{userid}
+    </delete>
+</mapper>
