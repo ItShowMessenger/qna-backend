@@ -26,7 +26,7 @@ public class TeacherController {
     private final ObjectMapper objectMapper;
     private final Ulid ulid;
 
-    @PostMapping("/profile")
+    @PostMapping("/profile")    // 선생님 추가 정보 저장
     public ResponseEntity<?> saveProfile(@RequestBody JsonNode request){
         try{
             JsonNode teacherNode = request.get("teacher");
@@ -52,7 +52,7 @@ public class TeacherController {
         }
     }
 
-    @PostMapping("/faq/{teacherid}")
+    @PostMapping("/faq/{teacherid}")    // faq 저장
     public ResponseEntity<?> insertFaq(@PathVariable("teacherid") String teacherid,
                                      @RequestBody List<Map<String, String>> faqs){
         try{
