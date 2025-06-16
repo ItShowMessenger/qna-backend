@@ -17,7 +17,7 @@ public interface ChatService {
     public void updateMessageRead(String userid, String roomid);
     public MessageDto selectMessageId(String messageid);
     public void deleteMessage(String messageid);
-    public void updateRoom(String roomid, UserDto.UserType usertype);
+    public void updateRoom(String roomid, String usertype);
     public void deleteRoom(String roomid);
     public void enterRoom(String roomid, String userid);
     public void exitRoom(String roomid, String userid);

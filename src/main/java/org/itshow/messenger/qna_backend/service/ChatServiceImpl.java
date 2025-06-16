@@ -90,7 +90,7 @@ public class ChatServiceImpl implements ChatService{
     }
 
     @Override
-    public void updateRoom(String roomid, UserDto.UserType usertype) {
+    public void updateRoom(String roomid, String usertype) {
         mapper.updateRoom(roomid, usertype);
     }
 

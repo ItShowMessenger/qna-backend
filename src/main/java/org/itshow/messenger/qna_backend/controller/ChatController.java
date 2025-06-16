@@ -138,7 +138,7 @@ public class ChatController {
 
             RoomDto.Status status = room.getStatus();
             if(status == null){
-                chatService.updateRoom(roomid, reqUser.getUsertype());
+                chatService.updateRoom(roomid, reqUser.getUsertype().name());
                 chatService.exitRoom(roomid, reqUser.getUserid());
             }else if (status.name().equals(reqUser.getUsertype().name())){
                 chatService.deleteRoom(roomid);
