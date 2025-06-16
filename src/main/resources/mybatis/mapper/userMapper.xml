@@ -37,4 +37,7 @@
         select * from user
         where usertype = 'STUDENT' and concat(email, '/', name) like concat('%', #{search}, '%')
     </select>
+    <insert id="insertAlarmSetting" parameterType="String">
+        insert into alarmsetting(userid) values( #{userid} )
+    </insert>
 </mapper>

@@ -94,4 +94,9 @@ public class UserServiceImpl implements UserService{
 
         return result;
     }
+
+    @Override
+    public void insertAlarmSetting(String userid) {
+        mapper.insertAlarmSetting(userid);
+    }
 }

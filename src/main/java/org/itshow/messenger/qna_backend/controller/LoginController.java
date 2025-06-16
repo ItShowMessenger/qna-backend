@@ -53,6 +53,7 @@ public class LoginController {
 
                 // user 추가
                 userService.insertUser(firebase);
+                userService.insertAlarmSetting(userid);
                 user = firebase;
 
                 // 선생님 추가 정보 필요

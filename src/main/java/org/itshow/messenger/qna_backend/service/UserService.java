@@ -16,4 +16,5 @@ public interface UserService {
     public Map<String, Object> selectUser(String userid);
     public List<Map<String, Object>> searchTeacher(String search);
     public List<Map<String, Object>> searchStudent(String search);
+    public void insertAlarmSetting(String userid);
 }
