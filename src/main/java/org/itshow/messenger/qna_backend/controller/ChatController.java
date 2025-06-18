@@ -60,7 +60,7 @@ public class ChatController {
         }
     }
 
-    @GetMapping("/{roomid}")    // 채팅방 자동 생성 + 대화 기록 조회
+    @GetMapping("/{roomid}")    // 채팅방 자동 생성 입장 + 대화 기록 조회
     public ResponseEntity<?> Chat(@PathVariable("roomid") String roomid){
         UserDto reqUser = getUser();
         if(reqUser == null){
@@ -70,7 +70,11 @@ public class ChatController {
         try{
             List<Map<String, Object>> result = new ArrayList<>();
 
-            RoomDto room = chatService.selectInsertRoom(roomid, reqUser.getUserid());
+            RoomDto room = chatService.selectInsertRoom(roomid,
+                    reqUser.getUserid(), reqUser.getUsertype().name());
+            if(room == null){
+                return Response.badRequest("나간 채팅방 접근 오류");
+            }
             result.add(Map.of(
                     "room", room
             ));
@@ -131,9 +135,10 @@ public class ChatController {
         }
 
         try{
-            RoomDto room = chatService.selectInsertRoom(roomid, reqUser.getUserid());
+            RoomDto room = chatService.selectInsertRoom(roomid,
+                    reqUser.getUserid(), reqUser.getUsertype().name());
             if(room == null){
-                return Response.badRequest("채팅방이 존재하지 않음");
+                return Response.badRequest("나가진 채팅방 접근");
             }
 
             RoomDto.Status status = room.getStatus();
@@ -142,8 +147,6 @@ public class ChatController {
                 chatService.exitRoom(roomid, reqUser.getUserid());
             }else if (status.name().equals(reqUser.getUsertype().name())){
                 chatService.deleteRoom(roomid);
-            }else{
-                return Response.badRequest("이미 나간 채팅방");
             }
         }catch(Exception e){
             e.printStackTrace();

@@ -2,7 +2,6 @@ package org.itshow.messenger.qna_backend.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jdk.jfr.Frequency;
 import lombok.RequiredArgsConstructor;
 import org.itshow.messenger.qna_backend.dto.FileDto;
 import org.itshow.messenger.qna_backend.dto.ScheduleDto;
@@ -11,6 +10,7 @@ import org.itshow.messenger.qna_backend.dto.UserDto;
 import org.itshow.messenger.qna_backend.service.ChatService;
 import org.itshow.messenger.qna_backend.service.ScheduleService;
 import org.itshow.messenger.qna_backend.util.Response;
+import org.itshow.messenger.qna_backend.util.Ulid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,6 +28,7 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
     private final ChatService chatService;
     private final ObjectMapper objectMapper;
+    private final Ulid ulid;
 
     private UserDto getUser(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -57,8 +58,12 @@ public class ScheduleController {
         }
 
         try{
+            schedule.setUserid(reqUser.getUserid());
+            schedule.setScheduleid(ulid.nextUlid());
             scheduleService.insertSchedule(schedule);
             for(FileDto file : files){
+                file.setFileid(ulid.nextUlid());
+                file.setFiletype(FileDto.FileType.SCHEDULE);
                 file.setTargetid(schedule.getScheduleid());
                 chatService.insertFile(file);
             }
@@ -109,8 +114,8 @@ public class ScheduleController {
         }
 
         List<FileDto> files = new ArrayList<>();
-        if(jsonNode.has("file") && jsonNode.get("file").isArray()){
-            for(JsonNode node : jsonNode.get("file")){
+        if(jsonNode.has("files") && jsonNode.get("files").isArray()){
+            for(JsonNode node : jsonNode.get("files")){
                 files.add(objectMapper.convertValue(node, FileDto.class));
             }
         }
@@ -119,12 +124,12 @@ public class ScheduleController {
             scheduleService.updateSchedule(schedule);
 
             for(FileDto file : files){
-                FileDto getfile = scheduleService.selectFileOne(file.getFileid());
-                if(getfile == null){
+                if(file.getFileid() != null
+                        && scheduleService.selectFileOne(file.getFileid()) != null){
+                    scheduleService.updateFile(file);
+                }else{
                     file.setTargetid(schedule.getScheduleid());
                     chatService.insertFile(file);
-                }else{
-                    scheduleService.updateFile(file);
                 }
             }
 

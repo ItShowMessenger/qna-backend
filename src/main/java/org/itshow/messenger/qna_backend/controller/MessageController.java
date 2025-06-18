@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.itshow.messenger.qna_backend.dto.FileDto;
 import org.itshow.messenger.qna_backend.dto.MessageDto;
 import org.itshow.messenger.qna_backend.service.ChatService;
+import org.itshow.messenger.qna_backend.util.Ulid;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -21,10 +22,11 @@ public class MessageController {
     private final SimpMessagingTemplate messagingTemplate;
     private final ChatService chatService;
     private final ObjectMapper mapper;
+    private final Ulid ulid;
 
     @MessageMapping("/chat/message")   // 메시지 송수신 (text, file)
     public void sendMessage(@Payload JsonNode payload){
-        MessageDto message = mapper.convertValue(payload.get("MessageDto"), MessageDto.class);
+        MessageDto message = mapper.convertValue(payload.get("message"), MessageDto.class);
         List<FileDto> files = new ArrayList<>();
         if(payload.has("files") && payload.get("files").isArray()){
             for(JsonNode node : payload.get("files")){
@@ -41,8 +43,11 @@ public class MessageController {
             return ;
         }
 
+        message.setMessageid(ulid.nextUlid());
         chatService.insertMessage(message);
         for(FileDto file : files){
+            file.setFileid(ulid.nextUlid());
+            file.setFiletype(FileDto.FileType.MESSAGE);
             file.setTargetid(message.getMessageid());
             chatService.insertFile(file);
         }

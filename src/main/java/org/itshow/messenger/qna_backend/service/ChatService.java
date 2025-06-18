@@ -10,7 +10,7 @@ public interface ChatService {
     public List<RoomDto> searchRoom(String userid, UserDto.UserType usertype, String search);
     public MessageDto selectLastMessage(String lastmessageid);
     public int countUnRead(String roomid, String userid);
-    public RoomDto selectInsertRoom(String roomid, String userid);
+    public RoomDto selectInsertRoom(String roomid, String userid, String usertype);
     public List<MessageDto> selectMessage(String roomid);
     public List<FileDto> selectFile(String messageid);
     public List<EmojiDto> selectEmojiList(String messageid);

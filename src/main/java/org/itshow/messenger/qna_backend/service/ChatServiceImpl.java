@@ -47,12 +47,14 @@ public class ChatServiceImpl implements ChatService{
     }
 
     @Override
-    public RoomDto selectInsertRoom(String roomid, String userid) {
+    public RoomDto selectInsertRoom(String roomid, String userid, String usertype) {
         RoomDto room = mapper.selectRoom(roomid);
         if(room == null){
             mapper.insertRoom(roomid);
             room = mapper.selectRoom(roomid);
             enterRoom(roomid, userid);
+        }else if(room.getStatus().name().equals(usertype)){
+            return null;
         }
         return room;
     }
