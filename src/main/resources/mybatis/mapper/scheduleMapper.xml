@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.itshow.messenger.qna_backend.mapper.ScheduleMapper">
+    <select id="selectScheduleList" resultType="org.itshow.messenger.qna_backend.dto.ScheduleDto">
+        select * from schedule s left join shared u on (s.scheduleid = u.scheduleid)
+        where s.userid = #{userid} or u.studentid = #{userid}
+    </select>
+    <insert id="insertSchedule" parameterType="org.itshow.messenger.qna_backend.dto.ScheduleDto">
+        insert into schedule(scheduleid, userid, title, content, date, time, alarm)
+        values( #{scheduleid}, #{userid}, #{title}, #{content}, #{date}, #{time}, #{alarm} )
+    </insert>
+    <select id="selectFileOne" resultType="org.itshow.messenger.qna_backend.dto.FileDto">
+        select * from file where fileid = #{fileid}
+    </select>
+    <update id="updateFile" parameterType="org.itshow.messenger.qna_backend.dto.FileDto">
+        update file set url = #{url}, name = #{name} where fileid = #{fileid}
+    </update>
+    <update id="updateSchedule" parameterType="org.itshow.messenger.qna_backend.dto.ScheduleDto">
+        update schedule
+        set title = #{title}, content = #{content}, date = #{date}, time = #{time}, alarm = #{alarm}
+        where scheduleid = #{scheduleid}
+    </update>
+    <delete id="deleteSchedule" parameterType="String">
+        delete from schedule where scheduleid = #{scheduleid}
+    </delete>
+    <insert id="insertShared" parameterType="org.itshow.messenger.qna_backend.dto.SharedDto">
+        insert into shared(scheduleid, studentid) values( #{scheduleid}, #{studentid} )
+    </insert>
+    <delete id="deleteShared" parameterType="String">
+        delete from shared where scheduleid = #{scheduleid}
+    </delete>
+</mapper>
