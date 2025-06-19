@@ -53,7 +53,7 @@ public class ChatServiceImpl implements ChatService{
             mapper.insertRoom(roomid);
             room = mapper.selectRoom(roomid);
             enterRoom(roomid, userid);
-        }else if(room.getStatus().name().equals(usertype)){
+        }else if(room.getStatus() != null && room.getStatus().name().equals(usertype)){
             return null;
         }
         return room;
@@ -93,7 +93,12 @@ public class ChatServiceImpl implements ChatService{
 
     @Override
     public void updateRoom(String roomid, String usertype) {
-        mapper.updateRoom(roomid, usertype);
+        RoomDto room = mapper.selectRoom(roomid);
+        if(room.getStatus() == null){
+            mapper.updateRoom(roomid, usertype);
+        }else{
+            deleteRoom(roomid);
+        }
     }
 
     @Override

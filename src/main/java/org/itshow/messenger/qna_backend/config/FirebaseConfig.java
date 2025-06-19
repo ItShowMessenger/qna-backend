@@ -43,10 +43,4 @@ public class FirebaseConfig {
     public FirebaseMessaging firebaseMessaging(FirebaseApp firebaseApp){
         return FirebaseMessaging.getInstance(firebaseApp);
     }
-
-    // StorageClient Bean - Firebase Storage
-    @Bean
-    public StorageClient storageClient(FirebaseApp firebaseApp){
-        return StorageClient.getInstance(firebaseApp);
-    }
 }
